@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - AnimeStream</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="dark">
+    <header>
+        <nav>
+            <a href="/" class="logo">AnimeStream</a>
+            <div class="nav-right">
+                <button id="adminBtn" style="display:none;">Admin</button>
+                <button id="logoutBtn">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="admin-container">
+        <h1>Admin Panel</h1>
+        
+        <div class="admin-actions">
+            <button id="newAnimeBtn">Add New Anime</button>
+            <button id="editAnimeBtn">Edit Existing Anime</button>
+        </div>
+        
+        <div id="animeFormContainer" style="display:none;">
+            <form id="animeForm" class="anime-form">
+                <input type="hidden" id="animeId">
+                
+                <div class="form-group">
+                    <label for="title">Anime Title</label>
+                    <input type="text" id="title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="imageUrl">Cover Image URL</label>
+                    <input type="url" id="imageUrl" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="type">Type</label>
+                    <select id="type" required>
+                        <option value="TV Series">TV Series</option>
+                        <option value="Movie">Movie</option>
+                        <option value="OVA">OVA</option>
+                        <option value="ONA">ONA</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="episodeCount">Number of Episodes</label>
+                    <input type="number" id="episodeCount" min="1" value="1" required>
+                </div>
+                
+                <div id="episodeInputs" class="episode-inputs-container">
+                    <!-- Episode inputs will be generated here -->
+                </div>
+                
+                <div class="form-group">
+                    <label for="genres">Genres (comma separated)</label>
+                    <input type="text" id="genres" required placeholder="Action, Adventure, Fantasy">
+                </div>
+                
+                <div class="form-group">
+                    <label for="year">Release Year</label>
+                    <input type="number" id="year" min="1900" max="2099" value="2023">
+                </div>
+                
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" required>
+                        <option value="Ongoing">Ongoing</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Upcoming">Upcoming</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="rating">Rating (0-10)</label>
+                    <input type="number" id="rating" min="0" max="10" step="0.1" value="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" rows="5" required></textarea>
+                    <button type="button" id="generateDescBtn" class="secondary-btn">
+                        <i class="fas fa-magic"></i> Generate with AI
+                    </button>
+                </div>
+                
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="isFeatured">
+                    <label for="isFeatured">Featured Anime</label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="primary-btn">Save Anime</button>
+                    <button type="button" id="cancelBtn" class="secondary-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+        
+        <div id="animeListContainer">
+            <h2>Existing Anime</h2>
+            <table id="animeListTable">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Episodes</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Anime list will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

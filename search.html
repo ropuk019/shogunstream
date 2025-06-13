@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - Shogun Stream</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-dragon"></i> Shogun<span>Stream</span>
+        </div>
+        <div class="nav-links">
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <a href="/explore.html"><i class="fas fa-compass"></i> Explore</a>
+            <a href="/genre.html"><i class="fas fa-tags"></i> Genres</a>
+            <div class="search-container">
+                <input type="text" placeholder="Search anime..." id="searchInput" value="">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+            <a href="/profile.html" id="profileBtn"><i class="fas fa-user"></i> Profile</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="page-title">Search Results for "<span id="searchQuery"></span>"</h1>
+        
+        <div class="search-filters">
+            <div class="filter-group">
+                <label>Filter by:</label>
+                <select id="filterType">
+                    <option value="all">All</option>
+                    <option value="series">Series</option>
+                    <option value="movie">Movies</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Sort by:</label>
+                <select id="sortBy">
+                    <option value="relevance">Relevance</option>
+                    <option value="rating">Rating</option>
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="search-results" id="searchResults">
+            <!-- Search results will be loaded here -->
+        </div>
+        
+        <div class="pagination" id="pagination">
+            <!-- Pagination will be loaded here -->
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <!-- Footer content -->
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+    <script src="/js/search.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>

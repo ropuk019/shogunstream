@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Loading... - Shogun Stream</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-dragon"></i> Shogun<span>Stream</span>
+        </div>
+        <div class="nav-links">
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <a href="#" id="backBtn"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="watch-container">
+        <!-- Video Player Section -->
+        <div class="video-player-section">
+            <div class="video-container" id="videoContainer">
+                <div id="megaPlayer"></div>
+                <div class="video-loading" id="videoLoading">
+                    <div class="spinner"></div>
+                    <p>Loading video...</p>
+                </div>
+            </div>
+            
+            <div class="video-info">
+                <h1 id="animeTitle">Loading...</h1>
+                <div class="video-meta">
+                    <span id="episodeNumber">Episode 1</span>
+                    <span id="animeType">TV Series</span>
+                    <span id="animeRating"><i class="fas fa-star"></i> 0.0</span>
+                </div>
+                <p id="animeDescription">Loading description...</p>
+            </div>
+        </div>
+
+        <!-- Episode Selector -->
+        <div class="episode-selector">
+            <h2>Episodes</h2>
+            <div class="episode-list" id="episodeList">
+                <!-- Dynamically loaded -->
+            </div>
+        </div>
+
+        <!-- Recommended Section -->
+        <div class="recommended-section">
+            <h2>You May Also Like</h2>
+            <div class="anime-grid" id="recommendedAnime">
+                <!-- Dynamically loaded -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/anime.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        // Load Mega Player API
+        function loadMegaPlayer(videoUrl) {
+            document.getElementById('videoLoading').style.display = 'flex';
+            
+            // Mega player implementation
+            const megaPlayer = document.getElementById('megaPlayer');
+            megaPlayer.innerHTML = `
+                <iframe src="${videoUrl}" 
+                        frameborder="0" 
+                        allowfullscreen 
+                        style="width:100%;height:100%;">
+                </iframe>
+            `;
+            
+            document.getElementById('videoLoading').style.display = 'none';
+        }
+
+        // Get anime ID and episode from URL
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                animeId: params.get('id'),
+                episode: params.get('ep') || 1
+            };
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { animeId, episode } = getUrlParams();
+            
+            if (!animeId) {
+                window.location.href = '/';
+                return;
+            }
+
+            // Load anime data
+            const anime = await getAnimeData(animeId);
+            if (!anime) {
+                window.location.href = '/';
+                return;
+            }
+
+            // Update page info
+            document.getElementById('pageTitle').textContent = `${anime.title} - Shogun Stream`;
+            document.getElementById('animeTitle').textContent = anime.title;
+            document.getElementById('animeType').textContent = anime.type;
+            document.getElementById('animeRating').innerHTML = `<i class="fas fa-star"></i> ${anime.rating}`;
+            document.getElementById('animeDescription').textContent = anime.description;
+            document.getElementById('episodeNumber').textContent = `Episode ${episode}`;
+
+            // Load episode
+            const episodeData = anime.episodes.find(ep => ep.number == episode);
+            if (episodeData && episodeData.megaUrl) {
+                loadMegaPlayer(episodeData.megaUrl);
+            }
+
+            // Load episode list
+            renderEpisodeList(anime);
+
+            // Load recommended anime
+            loadRecommendedAnime(animeId);
+        });
+
+        function renderEpisodeList(anime) {
+            const episodeList = document.getElementById('episodeList');
+            episodeList.innerHTML = anime.episodes.map(ep => `
+                <div class="episode-item ${ep.number == getUrlParams().episode ? 'active' : ''}" 
+                     onclick="window.location.href='/watch.html?id=${anime.id}&ep=${ep.number}'">
+                    <span class="episode-num">${ep.number}</span>
+                    <span class="episode-title">${ep.title || `Episode ${ep.number}`}</span>
+                    <span class="episode-duration">${ep.duration || '24m'}</span>
+                </div>
+            `).join('');
+        }
+
+        async function loadRecommendedAnime(currentAnimeId) {
+            const recommendedAnime = document.getElementById('recommendedAnime');
+            const allAnime = await getAllAnime();
+            const recommended = allAnime.filter(a => a.id !== currentAnimeId).slice(0, 6);
+            
+            recommendedAnime.innerHTML = recommended.map(anime => `
+                <div class="anime-card" onclick="window.location.href='/watch.html?id=${anime.id}'">
+                    <img src="/assets/video-covers/${anime.id}.jpg" alt="${anime.title}">
+                    <div class="anime-info">
+                        <div class="anime-title">${anime.title}</div>
+                        <div class="anime-meta">
+                            <span>${anime.type}</span>
+                            <span class="anime-rating"><i class="fas fa-star"></i> ${anime.rating}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

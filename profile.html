@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Shogun Stream</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-dragon"></i> Shogun<span>Stream</span>
+        </div>
+        <div class="nav-links">
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <a href="/explore.html"><i class="fas fa-compass"></i> Explore</a>
+            <a href="/profile.html" class="active"><i class="fas fa-user"></i> Profile</a>
+            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </nav>
+
+    <div class="profile-container">
+        <div class="profile-sidebar">
+            <div class="profile-avatar">
+                <img src="/images/avatars/default.jpg" alt="Profile Avatar" id="profileAvatar">
+                <button class="btn btn-secondary btn-sm" id="changeAvatarBtn">
+                    <i class="fas fa-camera"></i> Change
+                </button>
+            </div>
+            <h2 id="profileUsername">Loading...</h2>
+            <p id="profileEmail">Loading...</p>
+            
+            <div class="profile-menu">
+                <a href="#" class="active" data-tab="overview"><i class="fas fa-user"></i> Overview</a>
+                <a href="#" data-tab="watchlist"><i class="fas fa-bookmark"></i> Watchlist</a>
+                <a href="#" data-tab="history"><i class="fas fa-history"></i> Watch History</a>
+                <a href="#" data-tab="settings"><i class="fas fa-cog"></i> Settings</a>
+            </div>
+        </div>
+        
+        <div class="profile-content">
+            <div class="tab-content active" id="overviewTab">
+                <h3>My Activity</h3>
+                <div class="activity-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-play"></i>
+                        <h4>Total Watched</h4>
+                        <p id="totalWatched">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <h4>Watch Time</h4>
+                        <p id="totalWatchTime">0h 0m</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-star"></i>
+                        <h4>Average Rating</h4>
+                        <p id="avgRating">0.0</p>
+                    </div>
+                </div>
+                
+                <h3>Recently Watched</h3>
+                <div class="recently-watched" id="recentlyWatched">
+                    <!-- Recently watched anime will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="tab-content" id="watchlistTab">
+                <h3>My Watchlist</h3>
+                <div class="watchlist-grid" id="watchlistGrid">
+                    <!-- Watchlist anime will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="tab-content" id="historyTab">
+                <h3>Watch History</h3>
+                <div class="history-actions">
+                    <button class="btn btn-secondary" id="clearHistoryBtn">
+                        <i class="fas fa-trash"></i> Clear History
+                    </button>
+                </div>
+                <div class="history-grid" id="historyGrid">
+                    <!-- Watch history will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="tab-content" id="settingsTab">
+                <h3>Account Settings</h3>
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="displayName">Display Name</label>
+                        <input type="text" id="displayName" placeholder="Your display name">
+                    </div>
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" id="currentPassword" placeholder="Enter current password">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" placeholder="Enter new password">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmNewPassword">Confirm New Password</label>
+                        <input type="password" id="confirmNewPassword" placeholder="Confirm new password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <!-- Footer content -->
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+    <script src="/js/profile.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
