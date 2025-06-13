@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demon Slayer: Kimetsu no Yaiba - Shogun Stream</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-dragon"></i> Shogun<span>Stream</span>
+        </div>
+        <div class="nav-links">
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <a href="/explore.html"><i class="fas fa-compass"></i> Explore</a>
+            <a href="/genre.html"><i class="fas fa-tags"></i> Genres</a>
+            <div class="search-container">
+                <input type="text" placeholder="Search anime..." id="searchInput">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+            <a href="/profile.html" id="profileBtn"><i class="fas fa-user"></i> Profile</a>
+            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </nav>
+
+    <div class="anime-detail-container">
+        <div class="anime-header">
+            <div class="anime-poster">
+                <img src="/assets/video-covers/demon-slayer.jpg" alt="Demon Slayer">
+                <div class="anime-actions">
+                    <button class="btn btn-primary" id="watchFirstEpisode">
+                        <i class="fas fa-play"></i> Watch Now
+                    </button>
+                    <button class="btn btn-secondary" id="toggleWatchlist">
+                        <i class="fas fa-bookmark"></i> Add to Watchlist
+                    </button>
+                </div>
+            </div>
+            <div class="anime-info">
+                <h1>Demon Slayer: Kimetsu no Yaiba</h1>
+                <div class="anime-meta">
+                    <span><i class="fas fa-film"></i> TV Series</span>
+                    <span><i class="fas fa-calendar-alt"></i> 2019</span>
+                    <span><i class="fas fa-star"></i> 9.2</span>
+                    <span><i class="fas fa-tags"></i> Action, Adventure, Fantasy</span>
+                    <span><i class="fas fa-clock"></i> 24m per episode</span>
+                </div>
+                <div class="anime-description">
+                    <p>Tanjiro Kamado, a kindhearted boy who sells charcoal for a living, finds his family slaughtered by a demon. To make matters worse, his younger sister Nezuko, the sole survivor, has been transformed into a demon herself. Though devastated by this grim reality, Tanjiro resolves to become a "demon slayer" so that he can turn his sister back into a human, and kill the demon that massacred his family.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="anime-content">
+            <div class="anime-section">
+                <h2>Episodes</h2>
+                <div class="episode-list">
+                    <div class="episode-item" onclick="window.location.href='/watch.html?id=demon-slayer&ep=1'">
+                        <div class="episode-number">1</div>
+                        <div class="episode-info">
+                            <h3>Cruelty</h3>
+                            <p>Tanjiro Kamado lives with his impoverished family on a remote mountain. As the oldest sibling, he took upon the responsibility of ensuring his family's livelihood after the death of his father.</p>
+                        </div>
+                        <div class="episode-meta">
+                            <span>24m</span>
+                            <button class="btn btn-sm btn-outline">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- More episodes... -->
+                </div>
+            </div>
+
+
+            <div class="anime-section">
+                <h2>Recommended</h2>
+                <div class="anime-grid" id="recommendedAnime">
+                    <!-- Recommended anime will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <!-- Footer content -->
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/anime.js"></script>
+    <script>
+        // Initialize anime page
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Watch first episode button
+            document.getElementById('watchFirstEpisode').addEventListener('click', () => {
+                window.location.href = '/watch.html?id=demon-slayer&ep=1';
+            });
+            
+            // Watchlist button
+            const watchlistBtn = document.getElementById('toggleWatchlist');
+            const isInList = await isInWatchlist('demon-slayer');
+            
+            updateWatchlistButton(watchlistBtn, isInList);
+            
+            watchlistBtn.addEventListener('click', async () => {
+                const currentlyInList = await isInWatchlist('demon-slayer');
+                
+                if (currentlyInList) {
+                    const removed = await removeFromWatchlist('demon-slayer');
+                    updateWatchlistButton(watchlistBtn, !removed);
+                } else {
+                    const added = await addToWatchlist('demon-slayer');
+                    updateWatchlistButton(watchlistBtn, added);
+                }
+            });
+            
+            // Load recommended anime
+            loadRecommendedAnime('demon-slayer');
+        });
+        
+        function updateWatchlistButton(button, isInList) {
+            if (isInList) {
+                button.innerHTML = '<i class="fas fa-check"></i> In Watchlist';
+                button.classList.add('btn-success');
+                button.classList.remove('btn-secondary');
+            } else {
+                button.innerHTML = '<i class="fas fa-bookmark"></i> Add to Watchlist';
+                button.classList.add('btn-secondary');
+                button.classList.remove('btn-success');
+            }
+        }
+        
+        async function loadRecommendedAnime(currentAnimeId) {
+            try {
+                const snapshot = await firebase.database().ref('anime').once('value');
+                const allAnime = snapshot.val();
+                
+                if (!allAnime) return;
+                
+                // Get 6 random anime excluding the current one
+                const animeList = Object.values(allAnime).filter(a => a.id !== currentAnimeId);
+                const shuffled = animeList.sort(() => 0.5 - Math.random());
+                const recommended = shuffled.slice(0, 6);
+                
+                const grid = document.getElementById('recommendedAnime');
+                if (!grid) return;
+                
+                grid.innerHTML = recommended.map(anime => `
+                    <div class="anime-card" onclick="window.location.href='/watch.html?id=${anime.id}'">
+                        <img src="/assets/video-covers/${anime.id}.jpg" alt="${anime.title}">
+                        <div class="anime-info">
+                            <div class="anime-title">${anime.title}</div>
+                            <div class="anime-meta">
+                                <span>${anime.type}</span>
+                                <span class="anime-rating"><i class="fas fa-star"></i> ${anime.rating}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading recommended anime:', error);
+            }
+        }
+    </script>
+</body>
+</html>
